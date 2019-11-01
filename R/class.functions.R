@@ -1,7 +1,51 @@
+##### mids
+
 #' @export
 
-plot.mimids <- function(x, n = 1, type = "QQ", discrete.cutoff = 5,
-                        numdraws = 5000, interactive = TRUE, which.xs = NULL, ...){
+merge.mids <- function(x, y, by = NULL, ...) {
+
+  #S3 method
+
+  #Importing functions
+  #' @importFrom mice is.mids
+  mice::is.mids
+  #' @export
+
+  #Checking inputs format
+  if(!is.data.frame(y)) {stop("The input for the y must be a data frame.")}
+
+  if (mice::is.mids(x)) {
+    #Polishing variables
+    data.0 <- x$data
+    data.0$.id <- 1:nrow(x$data)
+    data.0$.imp <- 0
+    data.0 <- merge(data.0, y, by = by, all.x = TRUE, all.y = FALSE)
+
+    #Preparing the list
+    datasetslist <- vector("list", x$m + 1)
+    datasetslist[[1]] <- data.0
+
+    #Merging
+    for (i in 1:x$m) {
+      data.i <- complete(x, i)
+      data.i$.id <- 1:nrow(x$data)
+      data.i$.imp <- i
+      data.i <- merge(data.i, y, by = by, all.x = TRUE, all.y = FALSE)
+      datasetslist[[i+1]] <- data.i
+    }
+
+    #Returning output
+    new.datasets <- do.call("rbind", as.list(noquote(datasetslist)))
+    new.datasets <- as2.mids(new.datasets)
+    return(new.datasets)
+  }
+}
+
+##### mimids
+
+#' @export
+
+plot.mimids <- function(x, n = 1, ...){
 
   #S3 method
 
@@ -19,22 +63,18 @@ plot.mimids <- function(x, n = 1, type = "QQ", discrete.cutoff = 5,
   #Changes: Few
 
   #Checking inputs format
-  if(x$object$m < n) {stop("The input for the 'n' is out of bounds.")}
-
-  #Polishing variables
-  model <- x$models[[n + 1]]
+  if(x$object$m < n) {stop("The input for the n is out of bounds.")}
 
   #Printing out
-  cat("Dataset: #", n,  "\n", sep = "")
+  cat("Plotting               | dataset: #", n,  "\n", sep = "")
 
   #Plotting
-  graphics::plot(model, discrete.cutoff = discrete.cutoff, type = type,
-                 numdraws = numdraws, interactive = interactive, which.xs = which.xs, ...)
+  plot(x$models[[n+1]], ...)
 }
 
 #' @export
 
-print.mimids <- function(x, n = 1, digits = getOption("digits"), ...) {
+print.mimids <- function(x, n = 1, ...) {
 
   #S3 method
 
@@ -47,21 +87,20 @@ print.mimids <- function(x, n = 1, digits = getOption("digits"), ...) {
   #Changes: Some
 
   #Checking inputs format
-  if(x$object$m < n) {stop("The input for the 'n' is out of bounds.")}
+  if(x$object$m < n) {stop("The input for the n is out of bounds.")}
 
   #Printing out
-  cat("Dataset: #", n,  "\n", sep = "")
-  if (x$others$method. == 'exact') {cat("\nExact subclasses: ", max(x$models[[n + 1]]$subclass, na.rm = TRUE), "\n", sep="")}
-  cat("\nSample sizes: ", sep="\n")
+  cat("Printing               | dataset: #", n,  "\n", sep = "")
 
-  #Printing
-  print(x$models[[n + 1]]$nn)
+  #Printing out
+  output <- x$models[[n+1]]
+  output$call <- x$others$call.
+  return(print(output, ...))
 }
 
 #' @export
 
-summary.mimids <- function(object, n = 1, interactions = FALSE, addlvariables = NULL,
-                           standardize = FALSE, covariates = FALSE, ...) {
+summary.mimids <- function(object, n = 1, ...) {
 
   #S3 method
 
@@ -74,35 +113,72 @@ summary.mimids <- function(object, n = 1, interactions = FALSE, addlvariables = 
   #Changes: Some
 
   #Checking inputs format
-  if(object$object$m < n) {stop("The input for the 'n' is out of bounds.")}
+  if(object$object$m < n) {stop("The input for the n is out of bounds.")}
 
   #Printing out
-  cat("Dataset: #", n,  "\n", sep = "")
+  cat("Summarizing            | dataset: #", n,  "\n", sep = "")
 
-  #Summarizing
-  if (object$others$method. == 'exact') {
-    cat("\nSample sizes:", "\n", sep = "")
-    print(summary(object$models[[n + 1]], covariates = covariates)[[2]])
-    cat("\n    Matched sample sizes by subclass:", "\n", sep = "")
-    print(summary(object$models[[n + 1]], covariates = covariates)[[1]])
+  #Printing out
+  output <- summary(object$models[[n+1]], ...)
+  output$call <- object$others$call.
+  return(output)
 
-  }
-
-  if (object$others$method. == 'nearest') {
-    cat("\nSummary of balance for all data:", "\n", sep = "")
-    print(summary(object$models[[n + 1]], interactions = interactions, addlvariables = addlvariables, standardize = standardize)[[3]])
-    cat("\nSummary of balance for matched data:", "\n", sep = "")
-    print(summary(object$models[[n + 1]], interactions = interactions, addlvariables = addlvariables, standardize = standardize)[[4]])
-    cat("\nPercent balance improvement:", "\n", sep = "")
-    print(summary(object$models[[n + 1]], interactions = interactions, addlvariables = addlvariables, standardize = standardize)[[5]])
-    cat("\nSample sizes:", "\n", sep = "")
-    print(summary(object$models[[n + 1]], interactions = interactions, addlvariables = addlvariables, standardize = standardize)[[2]])
-  }
 }
 
 #' @export
 
-print.wimids <- function(x, n = 1, digits = getOption("digits"), ...) {
+merge.mimids <- function(x, y, by = NULL, ...) {
+
+  #S3 method
+
+  #Checking inputs format
+  if(!is.data.frame(y)) {stop("The input for the y must be a data frame.")}
+
+  if (is.mimids(x)) {
+    #Polishing variables
+    modelslist <- x$models
+    others <- x$others
+    originals <- x$original.datasets
+    datasets <- x$object
+
+    data.0 <- datasets$data
+    data.0$.id <- 1:nrow(datasets$data)
+    data.0$.imp <- 0
+    data.0 <- merge(data.0, y, by = by, all.x = TRUE, all.y = FALSE)
+
+    #Preparing the list
+    datasetslist <- vector("list", datasets$m + 1)
+    datasetslist[[1]] <- data.0
+
+    #Merging
+    for (i in 1:datasets$m) {
+      data.i <- complete(datasets, i)
+      data.i$.id <- 1:nrow(datasets$data)
+      data.i$.imp <- i
+      data.i <- merge(data.i, y, by = by, all.x = TRUE, all.y = FALSE)
+      datasetslist[[i+1]] <- data.i
+    }
+
+    #Prepating the output
+    new.datasets <- do.call("rbind", as.list(noquote(datasetslist)))
+    matched.datasets <- as2.mids(new.datasets)
+
+    #Returning output
+    output <- list(object = matched.datasets,
+                   models = modelslist,
+                   others = others,
+                   datasets = datasetslist,
+                   original.datasets = originals)
+    class(output) <- c("mimids", "list")
+    return(output)
+  }
+}
+
+##### wimids
+
+#' @export
+
+print.wimids <- function(x, n = 1, ...) {
 
   #S3 method
 
@@ -114,19 +190,19 @@ print.wimids <- function(x, n = 1, digits = getOption("digits"), ...) {
   #Changes: NA
 
   #Checking inputs format
-  if(x$object$m < n) {stop("The input for the 'n' is out of bounds.")}
+  if(x$object$m < n) {stop("The input for the n is out of bounds.")}
 
   #Printing out
-  cat("Dataset: #", n,  "\n", sep = "")
+  cat("Printing               | dataset: #", n,  "\n", sep = "")
 
   #Printing
-  print(x$models[[n + 1]])
+  output <- x$models[[n+1]]
+  return(print(output, ...))
 }
 
 #' @export
 
-summary.wimids <- function(object, n = 1, interactions = FALSE, addlvariables = NULL,
-                           standardize = FALSE, ...) {
+summary.wimids <- function(object, n = 1, ...) {
 
   #S3 method
 
@@ -138,11 +214,62 @@ summary.wimids <- function(object, n = 1, interactions = FALSE, addlvariables = 
   #Changes: NA
 
   #Checking inputs format
-  if(object$object$m < n) {stop("The input for the 'n' is out of bounds.")}
+  if(object$object$m < n) {stop("The input for the n is out of bounds.")}
 
   #Printing out
-  cat("Dataset: #", n,  "\n", sep = "")
+  cat("Summarizing            | dataset: #", n,  "\n", sep = "")
 
   #Summarizing
-  summary(object$models[[n + 1]])
+  output <- summary(object$models[[n+1]], ...)
+  return(output)
 }
+
+#' @export
+
+merge.wimids <- function(x, y, by = NULL, ...) {
+
+  #S3 method
+
+  #Checking inputs format
+  if(!is.data.frame(y)) {stop("The input for the y must be a data frame.")}
+
+  if (is.wimids(x)) {
+    #Polishing variables
+    modelslist <- x$models
+    others <- x$others
+    originals <- x$original.datasets
+    datasets <- x$object
+
+    data.0 <- datasets$data
+    data.0$.id <- 1:nrow(datasets$data)
+    data.0$.imp <- 0
+    data.0 <- merge(data.0, y, by = by, all.x = TRUE, all.y = FALSE)
+
+    #Preparing the list
+    datasetslist <- vector("list", datasets$m + 1)
+    datasetslist[[1]] <- data.0
+
+    #Binding
+    for (i in 1:datasets$m) {
+      data.i <- complete(datasets, i)
+      data.i$.id <- 1:nrow(datasets$data)
+      data.i$.imp <- i
+      data.i <- merge(data.i, y, by = by, all.x = TRUE, all.y = FALSE)
+      datasetslist[[i+1]] <- data.i
+    }
+
+    #Prepating the output
+    new.datasets <- do.call("rbind", as.list(noquote(datasetslist)))
+    weighted.datasets <- as2.mids(new.datasets)
+
+    #Returning output
+    output <- list(object = weighted.datasets,
+                   models = modelslist,
+                   others = others,
+                   datasets = datasetslist,
+                   original.datasets = originals)
+    class(output) <- c("wimids", "list")
+    return(output)
+  }
+}
+

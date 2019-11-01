@@ -13,19 +13,19 @@ is.wimids(object)
 This function returns a logical value indicating whether \code{object} is of the \code{wimids} class.
 }
 \description{
-The \code{is.wimids()} function checks whether class of objects is \code{wimids} or not.
+\code{is.wimids()} function checks whether class of objects is \code{wimids} or not.
 }
 \details{
 The class of objects is checked to be of the \code{wimids}.
 }
 \examples{
-\donttest{
-#Loading the dataset
+\donttest{#Loading the dataset
 data(osteoarthritis)
 
 #Multiply imputing the missing values
 imputed.datasets <- mice(osteoarthritis, m = 5, maxit = 10,
-                         method = c("", "", "mean", "polyreg", "logreg", "logreg", "logreg"))
+                         method = c("", "", "mean", "polyreg",
+                                    "logreg", "logreg", "logreg"))
 
 #Estimating weights of observations in the multiply imputed datasets
 weighted.datasets <- weightthem(OSP ~ AGE + SEX + BMI + RAC + SMK, imputed.datasets,
@@ -33,8 +33,7 @@ weighted.datasets <- weightthem(OSP ~ AGE + SEX + BMI + RAC + SMK, imputed.datas
 
 #Checking the 'weighted.datasets' object
 is.wimids(weighted.datasets)
-is(weighted.datasets)
-}
+is(weighted.datasets)}
 }
 \seealso{
 \code{\link[=weightthem]{weightthem}}

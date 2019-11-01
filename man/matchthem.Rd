@@ -9,46 +9,45 @@ matchthem(formula, datasets, approach = "within", method = "nearest",
   reestimate = FALSE, ...)
 }
 \arguments{
-\item{formula}{This argument takes the usual syntax of R formula, \code{z ~ x1 + x2}, where \code{z} is a binary treatment indicator and \code{x1} and \code{x2} are the potential confounders. Both the treatment indicator and the potential confounders must be contained in the imputed datasets, which is specified as \code{datasets} (see below). All of the usual R syntax for formula works. For example, \code{x1:x2} represents the first order interaction term between \code{x1} and \code{x2} and \code{I(x1^2)} represents the square term of \code{x1}. See \code{help(formula)} for details.}
+\item{formula}{This argument takes the usual syntax of R formula, \code{z ~ x1 + x2}, where \code{z} is a binary exposure indicator and \code{x1} and \code{x2} are the potential confounders. Both the exposure indicator and the potential confounders must be contained in the imputed datasets, which is specified as \code{datasets} (see below). All of the usual R syntax for formula works. For example, \code{x1:x2} represents the first order interaction term between \code{x1} and \code{x2} and \code{I(x1^2)} represents the square term of \code{x1}. See \code{help(formula)} for details.}
 
-\item{datasets}{This argument specifies the datasets containing the treatment indicator and the potential confounders called in the \code{formula}. This argument must be an object of the \code{mids} or \code{amelia} class, which is typically produced by a previous call to \code{mice()} or \code{mice.mids()} functions from the \pkg{mice} package or to \code{amelia} function from the \pkg{Amelia} package (the \pkg{Amelia} package is designed to impute missing data in a single cross-sectional dataset or in a time-series dataset, although it may work with the latter, currently, the \pkg{MatchThem} package only supports the former datasets).}
+\item{datasets}{This argument specifies the datasets containing the exposure indicator and the potential confounders called in the \code{formula}. This argument must be an object of the \code{mids} or \code{amelia} class, which is typically produced by a previous call to \code{mice()} or \code{mice.mids()} functions from the \pkg{mice} package or to \code{amelia()} function from the \pkg{Amelia} package (the \pkg{Amelia} package is designed to impute missing data in a single cross-sectional dataset or in a time-series dataset, currently, the \pkg{MatchThem} package only supports the former datasets).}
 
-\item{approach}{This argument specifies a matching approach. Currently, \code{"within"} (calculating distance measures within each imputed dataset and matching observations based on them ) and \code{"across"} (calculating distance measures within each imputed dataset, averaging distance measure for each observation across imputed datasets, and matching based on the averaged measures) approaches are available. The default is \code{"within"} which has been shown previously to produce unbiased results.}
+\item{approach}{This argument specifies a matching approach. Currently, \code{"within"} (calculating distance measures within each imputed dataset and matching observations based on them) and \code{"across"} (calculating distance measures within each imputed dataset, averaging distance measure for each observation across imputed datasets, and matching based on the averaged measures) approaches are available. The default is \code{"within"} which has been shown to produce unbiased results.}
 
-\item{method}{This argument specifies a matching method. Currently, \code{"nearest"} (nearest neighbor matching) and \code{"exact"} (exact matching) methods are available. The default is \code{"nearest"}. Note that within each of these matching methods, \pkg{MatchThem} offers a variety of options.}
+\item{method}{This argument specifies a matching method. Currently, \code{"nearest"} (nearest neighbor matching), \code{"exact"} (exact matching), \code{"full"} (full matching), \code{"genetic"} (genetic matching), \code{"subclass"} (subclassication), \code{"cem"} (coarsened exact matching), and \code{"optimal"} (optimal matching) methods are available (only the \code{"nearest"}, \code{"full"}, \code{"subclass"}, and \code{"optimal"} matching methods are compatible with the \code{"across"} approach). The default is \code{"nearest"}. Note that within each of these matching methods, \pkg{MatchThem} offers a variety of options.}
 
-\item{distance}{This argument specifies the method used to estimate the distance measure. The default is logistic regression, \code{"logit"}. A variety of other methods are available.}
+\item{distance}{This argument specifies the method that should be used to estimate the distance measure (the \code{"mahalanobis"} method for distance measure is not compatible with the \code{"across"} approach). The default is logistic regression, \code{"logit"}. A variety of other methods are available (please see the \pkg{MatchIt} package reference manual <https://cran.r-project.org/package=MatchIt> for more details).}
 
 \item{distance.options}{This optional argument specifies the arguments that are passed to the model for estimating the distance measure. The input to this argument should be a list.}
 
-\item{discard}{This argument specifies whether to discard observations that fall outside some measure of support of the distance score before matching and not allow them to be used at all in the matching procedure. Note that discarding observations may change the quantity of interest being estimated. The current options are \code{"none"} (discarding no observations before matching), \code{"both"} (discarding all observations, both the control and treatment observations, that are outside the support of the distance measure), \code{"control"} (discarding only control observations outside the support of the distance measure of the treatment observations), and \code{"treat"} (discarding only treatment observations outside the support of the distance measure of the control observations). The default is \code{"none"}.}
+\item{discard}{This argument specifies whether to discard observations that fall outside some measure of support of the distance score before matching and not allow them to be used at all in the matching procedure. Note that discarding observations may change the quantity of interest being estimated. The current options are \code{"none"} (discarding no observations before matching), \code{"both"} (discarding all observations, both the control and treated observations, that are outside the support of the distance measure), \code{"control"} (discarding only control observations outside the support of the distance measure of the treated observations), and \code{"treat"} (discarding only treated observations outside the support of the distance measure of the control observations). The default is \code{"none"}.}
 
 \item{reestimate}{This argument specifies whether the model for estimating the distance measure should be reestimated after observations are discarded. The input must be a logical value. The default is \code{FALSE}.}
 
-\item{...}{Additional arguments to be passed to the matching method.}
+\item{...}{Additional arguments to be passed to the matching method (please see the \pkg{MatchIt} package reference manual <https://cran.r-project.org/package=MatchIt> for more details).}
 }
 \value{
 This function returns an object of the \code{mimids} (matched multiply imputed datasets) class, that includes matched subsets of the imputed datasets primarily passed to the function by the \code{datasets} argument.
 }
 \description{
-The \code{matchthem()} function enables parametric models for causal inference to work better by selecting matched subsets of the control and treatment groups of imputed datasets of a \code{mids} or \code{amelia} class object.
+\code{matchthem()} function enables parametric models for causal inference to work better by selecting matched subsets of the control and treated subgroups of imputed datasets of a \code{mids} or \code{amelia} class object.
 }
 \details{
-The matching is done using the \code{matchthem(z ~ x1, ...)} command, where \code{z} is the treatment indicator and \code{x1} represents the potential cofoudenr to be used in the matching model. There are a number of matching options. The default syntax is \code{matchthem(formula, datasets = NULL, method = "nearest", model = "logit", ratio = 1, caliper = 0, ...)}. Summaries of the results can be seen graphically using \code{plot()} or numerically using \code{summary()} functions. The \code{print()} function also prints out the output.
+The matching is done using the \code{matchthem(z ~ x1, ...)} command, where \code{z} is the exposure indicator and \code{x1} represents the potential confounder to be used in the matching model. There are a number of matching options. The default syntax is \code{matchthem(formula, datasets, approach = "within", method = "nearest", distance = "logit", ...)}. Summaries of the results can be seen graphically using \code{plot()} or numerically using \code{summary()} functions. The \code{print()} function also prints out the output.
 }
 \examples{
-\donttest{
-#Loading the dataset
+\donttest{#Loading the dataset
 data(osteoarthritis)
 
 #Multiply imputing the missing values
 imputed.datasets <- mice(osteoarthritis, m = 5, maxit = 10,
-                         method = c("", "", "mean", "polyreg", "logreg", "logreg", "logreg"))
+                         method = c("", "", "mean", "polyreg",
+                                    "logreg", "logreg", "logreg"))
 
 #Matching the multiply imputed datasets
 matched.datasets <- matchthem(OSP ~ AGE + SEX + BMI + RAC + SMK, imputed.datasets,
-                              approach = 'within', method = 'nearest')
-}
+                              approach = 'within', method = 'nearest')}
 }
 \references{
 Daniel Ho, Kosuke Imai, Gary King, and Elizabeth Stuart (2007). Matching as Nonparametric Preprocessing for Reducing Model Dependence in Parametric Causal Inference. \emph{Political Analysis}, 15(3): 199-236. \url{http://gking.harvard.edu/files/abs/matchp-abs.shtml}
@@ -65,5 +64,5 @@ Gary King, James Honaker, Anne Joseph, and Kenneth Scheve (2001). Analyzing Inco
 \code{\link[=pool]{pool}}
 }
 \author{
-Farhad Pishgar
+Farhad Pishgar and Noah Greifer
 }
