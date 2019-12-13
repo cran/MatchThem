@@ -1,9 +1,12 @@
 #' @title Evaluates an Expression in Matched or Weighted Imputed Datasets
 #'
+#' @name with
+#'
 #' @rdname with
 #'
+#' @aliases with with.mimids with.wimids
+#'
 #' @method with mimids
-#' @method with wimids
 #'
 #' @param data This argument specifies an object of the \code{mimids} or \code{wimids} class, typically produced by a previous call to the \code{matchthem()} or \code{weightthem()}.
 #' @param expr This argument specifies an expression of the usual syntax of R formula (it also accepts expressions from \pkg{survey} package, like \code{svyglm()}, please note that you shouldn't include the \code{weights = weights} argument, see the package vignette for details).
@@ -14,13 +17,13 @@
 #'  \item Impute the missing values by the \code{mice()} function (from the \pkg{mice} package) or the \code{amelia()} function (from the \pkg{Amelia} package), resulting in a multiple imputed dataset (an object of the \code{mids} or \code{amelia} class);
 #'  \item Match or weight imputed datasets using a matching or weighting model by the \code{matchthem()} or \code{weightthem()} function, resulting in an object of the \code{mimids} or \code{wimids} class;
 #'  \item Check the extent of balance of covariates across the datasets;
-#'  \item Fit the statistical model of interest on each dataset by the \code{with()} function, resulting in an object of the \code{mira} class; and
-#'  \item Pool the estimates from each model into a single set of estimates and standard errors, resulting in an object of the \code{mipo} class.
+#'  \item Fit the statistical model of interest on each dataset by the \code{with()} function, resulting in an object of the \code{mimira} class; and
+#'  \item Pool the estimates from each model into a single set of estimates and standard errors, resulting in an object of the \code{mimipo} class.
 #' }
 #'
 #' @details \code{with()} performs a computation on the imputed datasets.
 #'
-#' @return This function returns an object of the \code{mira} class (multiply imputed repeated analyses).
+#' @return This function returns an object of the \code{mimira} class.
 #'
 #' @seealso \code{\link[=matchthem]{matchthem}}
 #' @seealso \code{\link[=weightthem]{weightthem}}
@@ -38,16 +41,6 @@
 #' imputed.datasets <- mice(osteoarthritis, m = 5, maxit = 10,
 #'                          method = c("", "", "mean", "polyreg",
 #'                                     "logreg", "logreg", "logreg"))
-#'
-#' #Matching the multiply imputed datasets
-#' matched.datasets <- matchthem(OSP ~ AGE + SEX + BMI + RAC + SMK, imputed.datasets,
-#'                               approach = 'within', method = 'nearest')
-#'
-#' #Analyzing the matched datasets
-#' models <- with(data = matched.datasets,
-#'                exp = glm(KOA ~ OSP, family = binomial))
-#'
-#' #or
 #'
 #' #Estimating weights of observations in the multiply imputed datasets
 #' weighted.datasets <- weightthem(OSP ~ AGE + SEX + BMI + RAC + SMK, imputed.datasets,
@@ -106,12 +99,18 @@ with.mimids <- function(data, expr, ...) {
   }
 
   #Return the complete data analyses as a list of length nimp
-  output <- list(call = call, call1 = object$call, nmis = object$nmis, analyses = analyses)
+  output <- list(call = call, called = data$call, nmis = data$others$source$nmis, analyses = analyses)
 
   #Return the output
-  oldClass(output) <- c("mira", "matrix")
+  oldClass(output) <- c("mimira", "matrix")
   return(output)
 }
+
+#' @rdname with
+#'
+#' @method with wimids
+#'
+#' @export
 
 with.wimids <- function(data, expr, ...) {
 
@@ -162,9 +161,9 @@ with.wimids <- function(data, expr, ...) {
   }
 
   #Return the complete data analyses as a list of length nimp
-  output <- list(call = call, call1 = object$call, nmis = object$nmis, analyses = analyses)
+  output <- list(call = call, called = data$call, nmis = data$others$source$nmis, analyses = analyses)
 
   #Return the output
-  oldClass(output) <- c("mira", "matrix")
+  oldClass(output) <- c("mimira", "matrix")
   return(output)
 }

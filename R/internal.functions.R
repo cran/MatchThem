@@ -83,30 +83,9 @@ barnard2.rubin <- function(m, b, t, dfcom = 999999) {
   dfold * dfobs / (dfold + dfobs)
 }
 
-df.residual.mira <- function(object, ...) {
-
-  #Internal function
-
-  #Based on: The mice:::df.residual()
-  #URL: <https://cran.r-project.org/package=mice>
-  #URL: <https://github.com/stefvanbuuren/mice>
-  #URL: <https://cran.r-project.org/web/packages/mice/mice.pdf>
-  #URL: <https://www.jstatsoft.org/article/view/v045i03/v45i03.pdf>
-  #Authors: Stef van Buuren et al.
-  #Changes: NA
-
-  #Importing functions
-  #' @importFrom stats df.residual
-  stats::df.residual
-
-  fit <- object$analyses[[1]]
-  return(df.residual(fit))
-}
-
 pool2.fitlist <- function (fitlist, dfcom = NULL) {
 
   #Internal function
-  #S3 method
 
   #Based on: The mice:::pool.fitlist()
   #URL: <https://cran.r-project.org/package=mice>
@@ -174,122 +153,76 @@ pool2.fitlist <- function (fitlist, dfcom = NULL) {
   return(output)
 }
 
-cbind <- function(datasets, data) {
+unrowname2. <- function (x) {
 
-  #External function
+  #Internal function
+
+  #Based on: The mice:::unrowname()
+  #URL: <https://cran.r-project.org/package=mice>
+  #URL: <https://github.com/stefvanbuuren/mice>
+  #URL: <https://cran.r-project.org/web/packages/mice/mice.pdf>
+  #URL: <https://www.jstatsoft.org/article/view/v045i03/v45i03.pdf>
+  #Authors: Stef van Buuren et al.
+  #Changes: NA
+
+  rownames(x) <- NULL
+  return(x)
+}
+
+format2.perc <- function (probs, digits) {
+
+  #Internal function
+
+  #Based on: The mice:::format2.perc()
+  #URL: <https://cran.r-project.org/package=mice>
+  #URL: <https://github.com/stefvanbuuren/mice>
+  #URL: <https://cran.r-project.org/web/packages/mice/mice.pdf>
+  #URL: <https://www.jstatsoft.org/article/view/v045i03/v45i03.pdf>
+  #Authors: Stef van Buuren et al.
+  #Changes: NA
+
+  paste(format(100 * probs, trim = TRUE, scientific = FALSE, digits = digits), "%")
+}
+
+process2.mimipo <- function(z, x, conf.int = FALSE, conf.level = 0.95, exponentiate = FALSE) {
+
+  #Internal function
+
+  #Based on: The mice:::process_mipo()
+  #URL: <https://cran.r-project.org/package=mice>
+  #URL: <https://github.com/stefvanbuuren/mice>
+  #URL: <https://cran.r-project.org/web/packages/mice/mice.pdf>
+  #URL: <https://www.jstatsoft.org/article/view/v045i03/v45i03.pdf>
+  #Authors: Stef van Buuren et al.
+  #Changes: NA
 
   #Importing functions
-  #' @importFrom mice is.mids complete
-  mice::is.mids
-  mice::complete
 
-  #Checking inputs format
-  if(is.null(datasets)) {stop("The input for the datasets must be specified.")}
-  if(is.null(data)) {stop("The input for the data must be specified.")}
-  if((!(mice::is.mids(datasets) || (is.mimids(datasets)) || (is.wimids(datasets))))) {stop("The input for the datasets must be an object of the 'mids', 'mimids', or 'wimids' class.")}
-  if(!is.data.frame(data)) {stop("The input for the data must be a dataframe.")}
+  #' @importFrom stats confint
+  stats::confint
 
-  if (mice::is.mids(datasets)) {
-    #Polishing variables
-    data.0 <- datasets$data
-    data.0$.id <- 1:nrow(datasets$data)
-    data.0$.imp <- 0
-    data.0 <- cbind(data.0, data)
-
-    #Preparing the list
-    datasetslist <- vector("list", datasets$m + 1)
-    datasetslist[[1]] <- data.0
-
-    #Binding
-    for (i in 1:datasets$m) {
-      data.i <- mice::complete(datasets, i)
-      data.i$.id <- 1:nrow(datasets$data)
-      data.i$.imp <- i
-      data.i <- cbind(data.i, data)
-      datasetslist[[i+1]] <- data.i
-    }
-
-    #Returning output
-    new.datasets <- do.call("rbind", as.list(noquote(datasetslist)))
-    new.datasets <- as2.mids(new.datasets)
-    return(new.datasets)
+  if (exponentiate) {
+    #Save transformation function for use on confidence interval
+    trans <- exp
+  } else {
+    trans <- identity
   }
 
-  if (is.mimids(datasets)) {
-    #Polishing variables
-    modelslist <- datasets$models
-    others <- datasets$others
-    originals <- datasets$original.datasets
-    datasets <- datasets$object
+  CI <- NULL
+  if (conf.int) {
+    #Avoid "Waiting for profiling to be done..." message
+    CI <- suppressMessages(confint(x, level = conf.level))
+  }
+  z$estimate <- trans(z$estimate)
 
-    data.0 <- datasets$data
-    data.0$.id <- 1:nrow(datasets$data)
-    data.0$.imp <- 0
-    data.0 <- cbind(data.0, data)
-
-    #Preparing the list
-    datasetslist <- vector("list", datasets$m + 1)
-    datasetslist[[1]] <- data.0
-
-    #Binding
-    for (i in 1:datasets$m) {
-      data.i <- mice::complete(datasets, i)
-      data.i$.id <- 1:nrow(datasets$data)
-      data.i$.imp <- i
-      data.i <- cbind(data.i, data)
-      datasetslist[[i+1]] <- data.i
-    }
-
-    #Prepating the output
-    new.datasets <- do.call("rbind", as.list(noquote(datasetslist)))
-    matched.datasets <- as2.mids(new.datasets)
-
-    #Returning output
-    output <- list(object = matched.datasets,
-                   models = modelslist,
-                   others = others,
-                   datasets = datasetslist,
-                   original.datasets = originals)
-    class(output) <- c("mimids", "list")
-    return(output)
+  if (!is.null(CI)) {
+    z <- cbind(z[, c("estimate", "std.error", "statistic", "df", "p.value")],
+               trans(unrowname2.(CI)),
+               z[, c("riv", "lambda", "fmi", "ubar", "b", "t", "dfcom")])
+  } else {
+    z <- cbind(z[, c("estimate", "std.error", "statistic", "df", "p.value")],
+               z[, c("riv", "lambda", "fmi", "ubar", "b", "t", "dfcom")])
   }
 
-  if (is.wimids(datasets)) {
-    #Polishing variables
-    modelslist <- datasets$models
-    others <- datasets$others
-    originals <- datasets$original.datasets
-    datasets <- datasets$object
-
-    data.0 <- datasets$data
-    data.0$.id <- 1:nrow(datasets$data)
-    data.0$.imp <- 0
-    data.0 <- cbind(data.0, data)
-
-    #Preparing the list
-    datasetslist <- vector("list", datasets$m + 1)
-    datasetslist[[1]] <- data.0
-
-    #Binding
-    for (i in 1:datasets$m) {
-      data.i <- mice::complete(datasets, i)
-      data.i$.id <- 1:nrow(datasets$data)
-      data.i$.imp <- i
-      data.i <- cbind(data.i, data)
-      datasetslist[[i+1]] <- data.i
-    }
-
-    #Prepating the output
-    new.datasets <- do.call("rbind", as.list(noquote(datasetslist)))
-    weighted.datasets <- as2.mids(new.datasets)
-
-    #Returning output
-    output <- list(object = weighted.datasets,
-                   models = modelslist,
-                   others = others,
-                   datasets = datasetslist,
-                   original.datasets = originals)
-    class(output) <- c("wimids", "list")
-    return(output)
-  }
+  return(z)
 }
