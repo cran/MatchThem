@@ -53,8 +53,10 @@ matchthem <- function (formula, datasets,
 
   #Importing functions
   #' @importFrom MatchIt matchit
+  #' @importFrom mice complete
   #' @importFrom stats as.formula
   MatchIt::matchit
+  mice::complete
   stats::as.formula
   #' @export
 
@@ -112,7 +114,7 @@ matchthem <- function (formula, datasets,
     for (i in 1:datasets$m) {
 
       #Building the model
-      dataset <- complete(datasets, i)
+      dataset <- mice::complete(datasets, i)
       dataset$.id <- 1:nrow(datasets$data)
 
       #Printing out
@@ -184,7 +186,7 @@ matchthem <- function (formula, datasets,
     for (i in 1:datasets$m) {
 
       #Building the model
-      dataset <- complete(datasets, i)
+      dataset <- mice::complete(datasets, i)
       dataset$.id <- 1:nrow(datasets$data)
 
       #Printing out
@@ -207,7 +209,7 @@ matchthem <- function (formula, datasets,
 
     #Matching each dataset
     for (i in 1:datasets$m) {
-      dataset <- complete(datasets, i)
+      dataset <- mice::complete(datasets, i)
       dataset$.id <- 1:nrow(datasets$data)
       dataset$estimated.distance <- d
 

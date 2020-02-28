@@ -103,9 +103,10 @@ pool.mimira <- function (object, dfcom = NULL) {
   #Changes: Few
 
   #Importing functions
-  #' @importFrom mice getfit
+  #' @importFrom mice getfit pool
   #' @importFrom stats df.residual
   mice::getfit
+  mice::pool
   stats::df.residual
   #' @export
 
