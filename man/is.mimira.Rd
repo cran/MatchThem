@@ -20,7 +20,6 @@ The class of objects is checked to be of the \code{mimira}.
 }
 \examples{
 \donttest{#Loading libraries
-library(mice)
 library(MatchThem)
 library(survey)
 
@@ -28,13 +27,14 @@ library(survey)
 data(osteoarthritis)
 
 #Multiply imputing the missing values
-imputed.datasets <- mice(osteoarthritis, m = 5, maxit = 10,
-                         method = c("", "", "mean", "polyreg",
-                                    "logreg", "logreg", "logreg"))
+imputed.datasets <- mice::mice(osteoarthritis, m = 5)
 
 #Estimating weights of observations in the multiply imputed datasets
-weighted.datasets <- weightthem(OSP ~ AGE + SEX + BMI + RAC + SMK, imputed.datasets,
-                                approach = 'within', method = 'ps')
+weighted.datasets <- weightthem(OSP ~ AGE + SEX + BMI + RAC + SMK,
+                                imputed.datasets,
+                                approach = 'within',
+                                method = 'ps',
+                                estimand = "ATT")
 
 #Analyzing the weighted datasets
 models <- with(data = weighted.datasets,

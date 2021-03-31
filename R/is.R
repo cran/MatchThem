@@ -20,16 +20,13 @@
 #' @export
 #'
 #' @examples \donttest{#Loading libraries
-#' library(mice)
 #' library(MatchThem)
 #'
 #' #Loading the dataset
-#' data(dataset)
+#' data(osteoarthritis)
 #'
 #' #Multiply imputing the missing values
-#' imputed.datasets <- mice(osteoarthritis, m = 5, maxit = 10,
-#'                          method = c("", "", "mean", "polyreg",
-#'                                     "logreg", "logreg", "logreg"))
+#' imputed.datasets <- mice::mice(osteoarthritis, m = 5)
 #'
 #' #Matching the multiply imputed datasets
 #' matched.datasets <- matchthem(OSP ~ AGE + SEX + BMI + RAC + SMK, imputed.datasets,
@@ -41,12 +38,9 @@
 
 is.mimids <- function(object) {
 
-  #Importing functions
-  #' @importFrom methods is
-  methods::is
   #' @export
 
-  output <- methods::is(object, "mimids")
+  output <- inherits(object, "mimids")
   return(output)
 }
 
@@ -72,20 +66,20 @@ is.mimids <- function(object) {
 #' @export
 #'
 #' @examples \donttest{#Loading libraries
-#' library(mice)
 #' library(MatchThem)
 #'
 #' #Loading the dataset
 #' data(osteoarthritis)
 #'
 #' #Multiply imputing the missing values
-#' imputed.datasets <- mice(osteoarthritis, m = 5, maxit = 10,
-#'                          method = c("", "", "mean", "polyreg",
-#'                                     "logreg", "logreg", "logreg"))
+#' imputed.datasets <- mice::mice(osteoarthritis, m = 5)
 #'
 #' #Estimating weights of observations in the multiply imputed datasets
-#' weighted.datasets <- weightthem(OSP ~ AGE + SEX + BMI + RAC + SMK, imputed.datasets,
-#'                                 approach = 'within', method = 'ps')
+#' weighted.datasets <- weightthem(OSP ~ AGE + SEX + BMI + RAC + SMK,
+#'                                 imputed.datasets,
+#'                                 approach = 'within',
+#'                                 method = 'ps',
+#'                                 estimand = "ATT")
 #'
 #' #Checking the 'weighted.datasets' object
 #' is.wimids(weighted.datasets)
@@ -93,12 +87,9 @@ is.mimids <- function(object) {
 
 is.wimids <- function(object) {
 
-  #Importing functions
-  #' @importFrom methods is
-  methods::is
   #' @export
 
-  output <- methods::is(object, "wimids")
+  output <- inherits(object, "wimids")
   return(output)
 }
 
@@ -124,7 +115,6 @@ is.wimids <- function(object) {
 #' @export
 #'
 #' @examples \donttest{#Loading libraries
-#' library(mice)
 #' library(MatchThem)
 #' library(survey)
 #'
@@ -132,13 +122,14 @@ is.wimids <- function(object) {
 #' data(osteoarthritis)
 #'
 #' #Multiply imputing the missing values
-#' imputed.datasets <- mice(osteoarthritis, m = 5, maxit = 10,
-#'                          method = c("", "", "mean", "polyreg",
-#'                                     "logreg", "logreg", "logreg"))
+#' imputed.datasets <- mice::mice(osteoarthritis, m = 5)
 #'
 #' #Estimating weights of observations in the multiply imputed datasets
-#' weighted.datasets <- weightthem(OSP ~ AGE + SEX + BMI + RAC + SMK, imputed.datasets,
-#'                                 approach = 'within', method = 'ps')
+#' weighted.datasets <- weightthem(OSP ~ AGE + SEX + BMI + RAC + SMK,
+#'                                 imputed.datasets,
+#'                                 approach = 'within',
+#'                                 method = 'ps',
+#'                                 estimand = "ATT")
 #'
 #' #Analyzing the weighted datasets
 #' models <- with(data = weighted.datasets,
@@ -150,12 +141,9 @@ is.wimids <- function(object) {
 
 is.mimira <- function(object) {
 
-  #Importing functions
-  #' @importFrom methods is
-  methods::is
   #' @export
 
-  output <- methods::is(object, "mimira")
+  output <- inherits(object, "mimira")
   return(output)
 }
 
@@ -181,24 +169,25 @@ is.mimira <- function(object) {
 #' @export
 #'
 #' @examples \donttest{#Loading libraries
-#' library(mice)
 #' library(MatchThem)
+#' library(survey)
 #'
 #' #Loading the dataset
 #' data(osteoarthritis)
 #'
 #' #Multiply imputing the missing values
-#' imputed.datasets <- mice(osteoarthritis, m = 5, maxit = 10,
-#'                          method = c("", "", "mean", "polyreg",
-#'                                     "logreg", "logreg", "logreg"))
+#' imputed.datasets <- mice::mice(osteoarthritis, m = 5)
 #'
 #' #Estimating weights of observations in the multiply imputed datasets
-#' weighted.datasets <- weightthem(OSP ~ AGE + SEX + BMI + RAC + SMK, imputed.datasets,
-#'                                 approach = 'within', method = 'ps)
+#' weighted.datasets <- weightthem(OSP ~ AGE + SEX + BMI + RAC + SMK,
+#'                                 imputed.datasets,
+#'                                 approach = 'within',
+#'                                 method = 'ps',
+#'                                 estimand = "ATT")
 #'
-#' #Analyzing the matched datasets
-#' models <- with(data = matched.datasets,
-#'                exp = glm(KOA ~ OSP, family = binomial))
+#' #Analyzing the weighted datasets
+#' models <- with(data = weighted.datasets,
+#'                exp = svyglm(KOA ~ OSP, family = binomial))
 #'
 #' #Pooling results obtained from analysing the datasets
 #' results <- pool(models)
@@ -209,11 +198,8 @@ is.mimira <- function(object) {
 
 is.mimipo <- function(object) {
 
-  #Importing functions
-  #' @importFrom methods is
-  methods::is
   #' @export
 
-  output <- methods::is(object, "mimipo")
+  output <- inherits(object, "mimipo")
   return(output)
 }

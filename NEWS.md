@@ -4,14 +4,18 @@
 #### Matching and Weighting Multiply Imputed Datasets
 <!-- badges: end -->
 
-[![](https://img.shields.io/badge/CRAN%20version-0.9.3-success.svg?color=informational&style=for-the-badge)](https://cran.r-project.org/package=MatchThem)
-[![](https://img.shields.io/badge/github%20version-0.9.3-success.svg?color=informational&style=for-the-badge)](https://github.com/FarhadPishgar/MatchThem)
+[![](https://img.shields.io/badge/CRAN%20version-1.0.0-success.svg?color=informational&style=for-the-badge)](https://cran.r-project.org/package=MatchThem)
+[![](https://img.shields.io/badge/github%20version-1.0.0-success.svg?color=informational&style=for-the-badge)](https://github.com/FarhadPishgar/MatchThem)
 
 ## What's New
 
+### Version 1.0.0
+
+This is an update to improve documentation and to add several new features: 1. `mimira` and `mimipo` objects (the output of `with()` and `pool()`, respectively) now inherit from the `mice` classes `mira` and `mipo`. This means `mice` methods work with these objects. 2. `coxph()` when used with `with()` now correctly uses the robust standard errors. 3. A `cluster` argument has been added to `with.mimids()` to control whether cluster-robust standard errors should be used to account for pair membership when the model is a `svyglm()`-type model from the `survey` package. The default is to include pair membership when present and there are 20 or more unique subclasses (i.e., pairs). This works by supplying the pair membership variable (`subclass`) to the `ids` argument of `svydesign()`. 4. `cbind()` methods have been exported and documented. 5. `mimids` and `wimids` objects are now much smaller, now containing only the supplied `mids` object and the `matchit()` or `weightit()` outputs. and 6. Added `trim()` to trim estimated weights. This relies on `WeightIt::trim()` and uses the same syntax (thanks [Nicolas](https://twitter.com/n_hueb)!). 
+
 ### Version 0.9.3
 
-This is an update to kill few bugs.
+This is an update to fix few bugs.
 
 ### Version 0.9.2
 
