@@ -1,13 +1,13 @@
-#' @title Extracts Imputed Datasets
+#' @title Extracts Multiply Imputed Datasets
 #'
 #' @name complete
 #'
 #' @aliases complete complete.mimids complete.wimids
 #'
 #' @param data A \code{mimids} or \code{wimids} object.
-#' @param action The imputed dataset number, intended to extract its data, or an action. The input must be a positive integer or a keyword. The keywords include \code{"all"} (produces a \code{mild} object of the imputed datasets), \code{"long"} (produces a dataset with imputed datasets stacked vertically), and \code{"broad"} (produces a dataset with imputed datasets stacked horizontally). The default is \code{1}.
+#' @param action The imputed dataset number, intended to extract its data, or an action. The input must be a positive integer or a keyword. The keywords include \code{"all"} (produces a \code{mild} object of the multiply imputed datasets), \code{"long"} (produces a dataset with multiply imputed datasets stacked vertically), and \code{"broad"} (produces a dataset with multiply imputed datasets stacked horizontally). The default is \code{1}.
 #' @param include Whether the original data with the missing values should be included. The input must be a logical value. The default is \code{FALSE}.
-#' @param mild Whether the return value should be an object of \code{mild} class. Please note that setting \code{mild = TRUE} overrides \code{action} keywords \code{"long"}, \code{"broad"}, and \code{"repeated"}. The default is \code{FALSE}.
+#' @param mild Whether the return value should be an object of \code{mild} class. Please note that setting \code{mild = TRUE} overrides \code{action} keywords of \code{"long"}, \code{"broad"}, and \code{"repeated"}. The default is \code{FALSE}.
 #' @param all Whether to include observations with a zero estimated weight. The default is \code{TRUE}.
 #' @param ... Ignored.
 #'
@@ -21,7 +21,7 @@
 #' @seealso \code{\link[=wimids]{wimids}}
 #' @seealso \code{\link[mice:complete]{mice::complete}}
 #'
-#' @references Stef van Buuren and Karin Groothuis-Oudshoorn (2011). \code{mice}: Multivariate Imputation by Chained Equations in \code{R}. \emph{Journal of Statistical Software}, 45(3): 1-67. \url{https://www.jstatsoft.org/v45/i03/}
+#' @references Stef van Buuren and Karin Groothuis-Oudshoorn (2011). \code{mice}: Multivariate Imputation by Chained Equations in \code{R}. \emph{Journal of Statistical Software}, 45(3): 1-67. \doi{10.18637/jss.v045.i03}
 #'
 #' @export complete
 #'

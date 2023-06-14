@@ -18,13 +18,8 @@
 #'
 #' @author Farhad Pishgar
 #'
-#' @references Stef van Buuren and Karin Groothuis-Oudshoorn (2011). \code{mice}: Multivariate Imputation by Chained Equations in \code{R}. \emph{Journal of Statistical Software}, 45(3): 1-67. \url{https://www.jstatsoft.org/v45/i03/}
+#' @references Stef van Buuren and Karin Groothuis-Oudshoorn (2011). \code{mice}: Multivariate Imputation by Chained Equations in \code{R}. \emph{Journal of Statistical Software}, 45(3): 1-67. \doi{10.18637/jss.v045.i03}
 #'
 #' @keywords classes
 
 NULL
-
-#object: Original 'mids' object augmented with estimated weights
-#models: 'weightit' objects
-#datasets: Imputed datasets with estimated weights (lapply(0:m, .(i) complete(W$object, i)))
-#others: List with source, which is the original 'mids' object
