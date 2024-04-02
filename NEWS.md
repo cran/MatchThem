@@ -4,10 +4,18 @@
 #### Matching and Weighting Multiply Imputed Datasets
 <!-- badges: end -->
 
-[![](https://img.shields.io/badge/CRAN%20version-1.1.0-success.svg?color=informational&style=for-the-badge)](https://cran.r-project.org/package=MatchThem)
-[![](https://img.shields.io/badge/github%20version-1.1.0-success.svg?color=informational&style=for-the-badge)](https://github.com/FarhadPishgar/MatchThem)
+[![](https://img.shields.io/badge/CRAN%20version-1.2.1-success.svg?color=informational&style=for-the-badge)](https://cran.r-project.org/package=MatchThem)
+[![](https://img.shields.io/badge/github%20version-1.2.1-success.svg?color=informational&style=for-the-badge)](https://github.com/FarhadPishgar/MatchThem)
 
 ## What's New
+
+### Version 1.2.1
+
+Support for using `glm_weightit()` in the outcome model after weighting using `weightthem()` is added.
+
+### Version 1.2.0
+
+New functions `as.mimids()` and `as.wimids()` are now available; these take a list of `matchit` or `weightit` objects fit to multiply imputed data and transform them into a `mimids` or `wimids` object, respectively, for use in balance assessment and to take advantage of `MatchThem`'s other capabilities.
 
 ### Version 1.1.0
 

@@ -19,10 +19,7 @@ This function returns a logical value indicating whether \code{object} is of the
 The class of objects is checked to be of the \code{mimids}.
 }
 \examples{
-\donttest{#Loading libraries
-library(MatchThem)
-
-#Loading the dataset
+\donttest{#Loading the dataset
 data(osteoarthritis)
 
 #Multiply imputing the missing values
@@ -35,13 +32,14 @@ matched.datasets <- matchthem(OSP ~ AGE + SEX + BMI + RAC + SMK,
                               method = 'nearest')
 
 #Checking the 'matched.datasets' object
-is.mimids(matched.datasets)
-is(matched.datasets)}
+is.mimids(matched.datasets)}
 }
 \seealso{
-\code{\link[=matchthem]{matchthem}}
+\code{\link[=matchthem]{matchthem()}}
 
-\code{\link[=mimids]{mimids}}
+\code{\link{mimids}}
+
+\code{\link[=inherits]{inherits()}}
 }
 \author{
 Farhad Pishgar

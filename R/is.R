@@ -1,28 +1,26 @@
-#' @title Checks for the \code{mimids} Class
+#' @title Checks for the `mimids` Class
 #'
 #' @rdname is.mimids
 #'
 #' @aliases is.mimids
 #'
-#' @param object This argument specifies the object that should be checked to see if it is of the \code{mimids} class or not.
+#' @param object This argument specifies the object that should be checked to see if it is of the `mimids` class or not.
 #'
-#' @description \code{is.mimids()} function checks whether class of objects is \code{mimids} or not.
+#' @description `is.mimids()` function checks whether class of objects is `mimids` or not.
 #'
-#' @details The class of objects is checked to be of the \code{mimids}.
+#' @details The class of objects is checked to be of the `mimids`.
 #'
-#' @return This function returns a logical value indicating whether \code{object} is of the \code{mimids} class.
+#' @return This function returns a logical value indicating whether `object` is of the `mimids` class.
 #'
-#' @seealso \code{\link[=matchthem]{matchthem}}
-#' @seealso \code{\link[=mimids]{mimids}}
+#' @seealso [matchthem()]
+#' @seealso [`mimids`]
+#' @seealso [inherits()]
 #'
 #' @author Farhad Pishgar
 #'
 #' @export
 #'
-#' @examples \donttest{#Loading libraries
-#' library(MatchThem)
-#'
-#' #Loading the dataset
+#' @examples \donttest{#Loading the dataset
 #' data(osteoarthritis)
 #'
 #' #Multiply imputing the missing values
@@ -35,42 +33,37 @@
 #'                               method = 'nearest')
 #'
 #' #Checking the 'matched.datasets' object
-#' is.mimids(matched.datasets)
-#' is(matched.datasets)}
+#' is.mimids(matched.datasets)}
 
 is.mimids <- function(object) {
 
   #' @export
 
-  output <- inherits(object, "mimids")
-  return(output)
+  inherits(object, "mimids")
 }
 
-#' @title Checks for the \code{wimids} Class
+#' @title Checks for the `wimids` Class
 #'
 #' @rdname is.wimids
 #'
 #' @aliases is.wimids
 #'
-#' @param object This argument specifies the object that should be checked to see if it is of the \code{wimids} class or not.
+#' @param object This argument specifies the object that should be checked to see if it is of the `wimids` class or not.
 #'
-#' @description \code{is.wimids()} function checks whether class of objects is \code{wimids} or not.
+#' @description `is.wimids()` function checks whether class of objects is `wimids` or not.
 #'
-#' @details The class of objects is checked to be of the \code{wimids}.
+#' @details The class of objects is checked to be of the `wimids`.
 #'
-#' @return This function returns a logical value indicating whether \code{object} is of the \code{wimids} class.
+#' @return This function returns a logical value indicating whether `object` is of the `wimids` class.
 #'
-#' @seealso \code{\link[=weightthem]{weightthem}}
-#' @seealso \code{\link[=wimids]{wimids}}
+#' @seealso [`weightthem()`][weightthem]
+#' @seealso [`wimids()`][wimids]
 #'
 #' @author Farhad Pishgar
 #'
 #' @export
 #'
-#' @examples \donttest{#Loading libraries
-#' library(MatchThem)
-#'
-#' #Loading the dataset
+#' @examples \donttest{#Loading the dataset
 #' data(osteoarthritis)
 #'
 #' #Multiply imputing the missing values
@@ -80,44 +73,41 @@ is.mimids <- function(object) {
 #' weighted.datasets <- weightthem(OSP ~ AGE + SEX + BMI + RAC + SMK,
 #'                                 imputed.datasets,
 #'                                 approach = 'within',
-#'                                 method = 'ps',
+#'                                 method = 'glm',
 #'                                 estimand = "ATT")
 #'
 #' #Checking the 'weighted.datasets' object
-#' is.wimids(weighted.datasets)
-#' is(weighted.datasets)}
+#' is.wimids(weighted.datasets)}
 
 is.wimids <- function(object) {
 
   #' @export
 
-  output <- inherits(object, "wimids")
-  return(output)
+  inherits(object, "wimids")
 }
 
-#' @title Checks for the \code{mimira} Class
+#' @title Checks for the `mimira` Class
 #'
 #' @rdname is.mimira
 #'
 #' @aliases is.mimira
 #'
-#' @param object This argument specifies the object that should be checked to see if it is of the \code{mimira} class or not.
+#' @param object This argument specifies the object that should be checked to see if it is of the `mimira` class or not.
 #'
-#' @description \code{is.mimira()} function checks whether class of objects is \code{mimira} or not.
+#' @description `is.mimira()` function checks whether class of objects is `mimira` or not.
 #'
-#' @details The class of objects is checked to be of the \code{mimira}.
+#' @details The class of objects is checked to be of the `mimira`.
 #'
-#' @return This function returns a logical value indicating whether \code{object} is of the \code{mimira} class.
+#' @return This function returns a logical value indicating whether `object` is of the `mimira` class.
 #'
-#' @seealso \code{\link[=with]{with}}
-#' @seealso \code{\link[=mimira]{mimira}}
+#' @seealso [`with()`][with]
+#' @seealso [`mimira()`][mimira]
 #'
 #' @author Farhad Pishgar
 #'
 #' @export
 #'
 #' @examples \donttest{#Loading libraries
-#' library(MatchThem)
 #' library(survey)
 #'
 #' #Loading the dataset
@@ -130,48 +120,45 @@ is.wimids <- function(object) {
 #' weighted.datasets <- weightthem(OSP ~ AGE + SEX + BMI + RAC + SMK,
 #'                                 imputed.datasets,
 #'                                 approach = 'within',
-#'                                 method = 'ps',
+#'                                 method = 'glm',
 #'                                 estimand = "ATT")
 #'
 #' #Analyzing the weighted datasets
-#' models <- with(data = weighted.datasets,
-#'                exp = svyglm(KOA ~ OSP, family = binomial))
+#' models <- with(weighted.datasets,
+#'                svyglm(KOA ~ OSP, family = binomial))
 #'
 #' #Checking the 'models' object
-#' is.mimira(models)
-#' is(models)}
+#' is.mimira(models)}
 
 is.mimira <- function(object) {
 
   #' @export
 
-  output <- inherits(object, "mimira")
-  return(output)
+  inherits(object, "mimira")
 }
 
-#' @title Checks for the \code{mimipo} Class
+#' @title Checks for the `mimipo` Class
 #'
 #' @rdname is.mimipo
 #'
 #' @aliases is.mimipo
 #'
-#' @param object This argument specifies the object that should be checked to see if it is of the \code{mimipo} class or not.
+#' @param object This argument specifies the object that should be checked to see if it is of the `mimipo` class or not.
 #'
-#' @description \code{is.mimipo()} function checks whether class of objects is \code{mimipo} or not.
+#' @description `is.mimipo()` function checks whether class of objects is `mimipo` or not.
 #'
-#' @details The class of objects is checked to be of the \code{mimipo}.
+#' @details The class of objects is checked to be of the `mimipo`.
 #'
-#' @return This function returns a logical value indicating whether \code{object} is of the \code{mimipo} class.
+#' @return This function returns a logical value indicating whether `object` is of the `mimipo` class.
 #'
-#' @seealso \code{\link[=pool]{pool}}
-#' @seealso \code{\link[=mimipo]{mimipo}}
+#' @seealso [`pool()`][pool]
+#' @seealso [`mimipo()`][mimipo]
 #'
 #' @author Farhad Pishgar
 #'
 #' @export
 #'
 #' @examples \donttest{#Loading libraries
-#' library(MatchThem)
 #' library(survey)
 #'
 #' #Loading the dataset
@@ -184,7 +171,7 @@ is.mimira <- function(object) {
 #' weighted.datasets <- weightthem(OSP ~ AGE + SEX + BMI + RAC + SMK,
 #'                                 imputed.datasets,
 #'                                 approach = 'within',
-#'                                 method = 'ps',
+#'                                 method = 'glm',
 #'                                 estimand = "ATT")
 #'
 #' #Analyzing the weighted datasets
@@ -195,13 +182,11 @@ is.mimira <- function(object) {
 #' results <- pool(models)
 #'
 #' #Checking the 'results' object
-#' is.mimipo(results)
-#' is(results)}
+#' is.mimipo(results)}
 
 is.mimipo <- function(object) {
 
   #' @export
 
-  output <- inherits(object, "mimipo")
-  return(output)
+  inherits(object, "mimipo")
 }
